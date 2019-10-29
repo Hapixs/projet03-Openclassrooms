@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%msg%n"/>
+        </Console>
+        <RollingFile name="LogOutFile" fileName="D:/projet03/logfile.log" filepattern="D:/projet03/logfile-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="[%d{dd/MM/yyyy}] | [%d{HH:mm:ss}] [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <!-- LOGGER TEST -->
+        <Logger name="oc.projet03.main" level="info">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Root level="warn" additivity="false">
+            <AppenderRef ref="LogOutFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
