@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project>
+        <groupId>oc.projet03.main</groupId>
+        <version>1.0</version>
+        <artifactId>projet03</artifactId>
+        <name>Projet03</name>
+        <url>http://maven.apache.org</url>
+    <modelVersion>4.0.0</modelVersion>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.12.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>LATEST</version>
+        </dependency>
+    </dependencies>
+</project>
