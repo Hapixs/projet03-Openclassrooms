@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <devmode>true</devmode>
+    <maxtry>10</maxtry>
+    <keysize>4</keysize>
+</config>

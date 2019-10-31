@@ -1,8 +1,9 @@
 package oc.projet03.main;
 
+import oc.projet03.utils.ConfigFile;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.logging.LogManager;
 
 /**
  * @author Alexandre Sarouille
@@ -24,9 +25,24 @@ import java.util.logging.LogManager;
  */
 
 public class Main {
-    private static Logger logger = org.apache.logging.log4j.LogManager.getLogger(Main.class);
+    private static Logger logger = LogManager.getLogger(Main.class);
     public static void main(String[] param) {
         System.out.println("Hello World !");
+        /*
+            Avant d'analyser les paramère le programme doit prendre en compte les donnée qui sont contenue dans le fichier de config
+            ensuite les paramètre écraserons si ils sont présent les valeur de la config
+         */
+        boolean devmode = false;
+        int maxtry = 0;
+        int keysize = 0;
+        try {
+            ConfigFile cf = new ConfigFile();
+            devmode = cf.devMode();
+            maxtry = cf.maxTry();
+            keysize = cf.keySize();
+        } catch (Exception e) {
+           System.out.println("Une erreur est survenue lors de la lecture du fichier config.xml");
+        }
         /*
          TODO : Analyser les parametres donnés
                 paramètres : devmode, maxtry:[value], keysize:[value]
@@ -34,17 +50,15 @@ public class Main {
                 maxtry:[value] : defini le nombre d'essais [value] pour les joueurs
                 keysize:[value] : defini nombre de chiffre [value] que contient la clée
         */
-        boolean devmode = false;
-        int maxtry;
-        int keysize;
         try{
             for(String p: param) {
                 // PARAM devmode
                 if(p.equalsIgnoreCase("devmode")) devmode=true;
                 // PARAM maxtry
-                else if(p.split(":").length>2&&p.split(":")[0].equalsIgnoreCase("maxtry")) maxtry = Integer.parseInt(p.split(":")[1]);
+                else if(p.split(":").length>=2&&p.split(":")[0].equalsIgnoreCase("maxtry")) maxtry = Integer.parseInt(p.split(":")[1]);
                 // PARAM keysize
-                else if(p.split(":").length>2&&p.split(":")[0].equalsIgnoreCase("keysize"))keysize = Integer.parseInt(p.split(":")[1]);
+                else if(p.split(":").length>=2&&p.split(":")[0].equalsIgnoreCase("keysize"))keysize = Integer.parseInt(p.split(":")[1]);
+                else System.out.println(p+" n'est pas reconnus en tant qu'argument.");
             }
         } catch(NumberFormatException e) {
             System.out.println("Un problème est survenu lors de l'analyse des paramètres de lancement, une valeur n'est pas bonne !");
