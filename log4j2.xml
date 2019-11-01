@@ -12,11 +12,10 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <!-- LOGGER TEST -->
-        <Logger name="oc.projet03.main" level="info">
+        <Logger name="oc.projet03.game" level="debug">
             <AppenderRef ref="Console"/>
         </Logger>
-        <Root level="warn" additivity="false">
+        <Root >
             <AppenderRef ref="LogOutFile"/>
         </Root>
     </Loggers>
