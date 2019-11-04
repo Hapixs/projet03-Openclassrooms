@@ -8,15 +8,16 @@ import java.util.Scanner;
 
 public class HumanPlayer extends CraftPlayer {
     public final String username;
-    public HumanPlayer(Game g, String us) {
-        super(g);
+    public HumanPlayer(Game g, String us, int maxTry) {
+        super(g, maxTry);
         username = us;
+        speakListener().start();
     }
-    @Override
     public Thread speakListener() {
         return new Thread(() -> {
-            while(game().getActualStat()!= GameStat.SHUTDOWN && game().getActualPlayer()==this){
+            while(game().getActualStat()!= GameStat.SHUTDOWN){
                 game().log(3, "En attente du joueur.");
+                System.out.print(username+" > ");
                 new PlayerInputProcess(new Scanner(System.in).nextLine(), this).run();
             }
         });

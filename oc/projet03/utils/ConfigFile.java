@@ -22,24 +22,19 @@ public class ConfigFile {
         builder = fc.newDocumentBuilder();
         doc = builder.parse(f);
     }
-    public boolean devMode() {
+    private String getValue(String field) {
         NodeList ls =  doc.getElementsByTagName("config");
         Element e = (Element) ls.item(0);
-        String s = e.getElementsByTagName("devmode").item(0).getTextContent();
-        if(s.equalsIgnoreCase("false"))return false;
+        return e.getElementsByTagName(field).item(0).getTextContent();
+    }
+    public boolean devMode() {
+        if(getValue("devmode").equalsIgnoreCase("false"))return false;
         else return true;
     }
     public int maxTry() throws NumberFormatException {
-        NodeList ls =  doc.getElementsByTagName("config");
-        Element e = (Element) ls.item(0);
-        String s = e.getElementsByTagName("maxtry").item(0).getTextContent();
-        return Integer.parseInt(s);
+        return Integer.parseInt(getValue("maxtry"));
     }
     public int keySize() throws NumberFormatException {
-        NodeList ls =  doc.getElementsByTagName("config");
-        Element e = (Element) ls.item(0);
-        String s = e.getElementsByTagName("keysize").item(0).getTextContent();
-        return Integer.parseInt(s);
+        return Integer.parseInt(getValue("keysize"));
     }
-
 }
