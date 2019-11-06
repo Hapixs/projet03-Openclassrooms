@@ -57,7 +57,8 @@ public class PlayerInputProcess {
                 p.game().lastComparedTryResult=compared;
                 p.decrementTry();
                 if(Objects.equals(compared, p.game().key.perfectString())) {
-                    p.game().log(0, "Tu à gagner ! Bravo !");
+                    if(p.game().getActualPlayer() instanceof HumanPlayer) p.game().log(0, "Tu à gagner ! Bravo !");
+                    else p.game().log(0, "Tu à perdu l'ordi à trouver la clée avant toi !");
                     p.game().setGameStat(GameStat.END);
                 } else if(p.remainTry()<1) {
                     p.game().log(0, "Tu as perdu ! il ne te reste plus d'essais !");
@@ -83,12 +84,7 @@ public class PlayerInputProcess {
                         p.game().setGameStat(GameStat.END);
                         return;
                     }
-                    if(p.game().getMode()==2) {
-                        p.game().lastComparedTry = s;
-                    } else {
-                        p.game().lastComparedTry = s;
-                        p.game().lastComparedTryResult = p.game().key.compareTo(s.toCharArray());
-                    }
+                    p.game().lastComparedTry = s;
                     p.decrementTry();
                 }
             }

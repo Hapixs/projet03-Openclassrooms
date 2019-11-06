@@ -23,7 +23,7 @@ public class ConfigFile {
         doc = builder.parse(f);
     }
     private String getValue(String field) {
-        NodeList ls =  doc.getElementsByTagName("config");
+        NodeList ls = doc.getElementsByTagName("config");
         Element e = (Element) ls.item(0);
         return e.getElementsByTagName(field).item(0).getTextContent();
     }
@@ -36,5 +36,9 @@ public class ConfigFile {
     }
     public int keySize() throws NumberFormatException {
         return Integer.parseInt(getValue("keysize"));
+    }
+    public String getText(String name){
+        return getValue(name).replace("%n", "\n")
+                .replace("%t", "\t");
     }
 }

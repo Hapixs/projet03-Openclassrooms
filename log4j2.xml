@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
+<Configuration status="WARN">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%msg%n"/>
+            <PatternLayout pattern="[%date{HH:mm:ss}] %msg%n"/>
         </Console>
-        <RollingFile name="LogOutFile" fileName="D:/projet03/logfile.log" filepattern="D:/projet03/logfile-%d{yyyy-MM-dd}-%i.log">
+        <RollingFile name="LogOutFile" fileName="logfile.log" filepattern="D:/projet03/logfile-%d{yyyy-MM-dd}-%i.log.zip">
             <PatternLayout pattern="[%d{dd/MM/yyyy}] | [%d{HH:mm:ss}] [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
-                <SizeBasedTriggeringPolicy size="19500KB"/>
+                <SizeBasedTriggeringPolicy size="50KB"/>
             </Policies>
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="oc.projet03.game" level="debug">
+        <Root level="DEBUG">
             <AppenderRef ref="Console"/>
-        </Logger>
-        <Root >
             <AppenderRef ref="LogOutFile"/>
         </Root>
     </Loggers>

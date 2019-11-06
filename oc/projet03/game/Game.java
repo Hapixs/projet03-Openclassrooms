@@ -7,9 +7,7 @@ import oc.projet03.utils.ConfigFile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class Game {
@@ -25,9 +23,8 @@ public class Game {
     public Key key = new Key(); // Objet représentant la clé actuelle.
     public String lastComparedTryResult; // Dérnier resultat de la comparaison
     public String lastComparedTry;  // Dérnier essais d'un joueur
-
     public String cfg_username; // nom d'utilisateur (uniquement si définit dans les paramètres de lancement)
-
+    private HashMap<String, String> appText = new HashMap<>();
 
     public Game(String[] args) {
         log(0, "Initalisation des paramètres du jeux...");
@@ -39,6 +36,12 @@ public class Game {
             setDevMode(cf.devMode());
             maxtry = cf.maxTry();
             keysize = cf.keySize();
+            appText.put("WELCOM_MESSAGE", cf.getText("WELCOM_MESSAGE"));
+            appText.put("MAIN_MENU", cf.getText("MAIN_MENU"));
+            appText.put("END_MENU", cf.getText("END_MENU"));
+            appText.put("ARGUMENT_ERROR", cf.getText("ARGUMENT_ERROR"));
+
+
             log(3, "Donnée du fichier config.xml chargées !");
         } catch (Exception e) {
             log(1,"Une erreur est survenue lors de la lecture du fichier config.xml.");
@@ -102,21 +105,19 @@ public class Game {
             System.out.print("Nom d'utilisateur: ");
             registerNewPlayer(new HumanPlayer(this, new Scanner(System.in).next(), maxtry));
         } else registerNewPlayer(new HumanPlayer(this, cfg_username, maxtry));
-        log(0, "Bonjour "+((HumanPlayer) players.get(0)).username+" !");
-        log(0, "Bienvenue dans ce jeux.");
-        log(0, "---------------------------------------------------------");
+        for(String s : appText.get("WELCOM_MESSAGE").split("\n")) log(0, s.replace("'player'", ((HumanPlayer) players.get(0)).username));
         setGameStat(GameStat.WAITING);
     });
     public void stop() {
         log(3, "Arrêt de la game ...");
         setGameStat(GameStat.SHUTDOWN);
-        for(int i = 0; i < players(); i++) unregisterPlayer(players.get(i));
     }
     public Player getActualPlayer() {
         return players.get(0);
     }
     private void registerNewPlayer(Player p) {
-        if(!players.contains(p) && players()<2) players.add(p);
+        if(players()>2) for(Player pl : players) if(pl instanceof OrdiPlayer) unregisterPlayer(pl);
+        if(!players.contains(p))players.add(p);
         log(3, "Un joueur "+p.getClass().getSimpleName()+" vient d'être ajouter dans la game.");
     }
     private void unregisterPlayer(Player p) {
@@ -140,20 +141,14 @@ public class Game {
         else if(level>3) System.out.println("une erreur est survenue, impossible de trouvée le niveau de log "+level);
     }
     public void printMainMenu() {
-        log(0, "Choisis parmis les 3 modes de jeux ci-dessous celui au quel tu veux jouer");
-        log(0, "\t (0) Quitter le jeux.");
-        log(0, "\t (1) Attaquant : Essais de trouver la clée génere par l'ordi en "+maxtry+" essais");
-        log(0, "\t (2) Deffenseur : Choisis une clé et l'ordi essaiera de la trouvée");
-        log(0, "\t (3) Duel : Soit plus rapide que l'ordi à trouver la clée");
+        for(String s : appText.get("MAIN_MENU").split("\n")) log(0, s.replace("'maxtry'", maxtry+"")
+        .replace("'keysize'", keysize+""));
     }
     public void sendArgumentErrorMessage(Object arg) {
-        log(1, "Désolé mais "+arg+" n'est pas un argument valide");
+        log(0, appText.get("ARGUMENT_ERROR").replace("'arg'", arg+""));
     }
     public void printEndMenu(){
-        log(0, "Choisis une option ci-dessous.");
-        log(0, "\t(0) Quitter le jeux.");
-        log(0, "\t(1) Rejouer.");
-        log(0, "\t(2) Revenir au menu principale.");
+        for(String s : appText.get("END_MENU").split("\n")) log(0, s);
     }
     public int players() {
         return players.size();
@@ -166,6 +161,8 @@ public class Game {
         if(mode > 3) return;
         log(3, "Initialisation du mode "+mode+" ...");
         for(Player p : players) p.resetData();
+        lastComparedTryResult = null;
+        lastComparedTry = null;
         key = new Key();
         this.mode = mode;
         if(mode!=2){
@@ -193,7 +190,7 @@ public class Game {
         }
         if(mode!=1) {
             registerNewPlayer(new OrdiPlayer(this, maxtry, keysize));
-            switchPlayer();
+            if(mode==3 && new Random().nextInt(3) > 1) switchPlayer();
         }
     }
 }

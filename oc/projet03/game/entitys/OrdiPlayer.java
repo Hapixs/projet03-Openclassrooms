@@ -4,38 +4,49 @@ import oc.projet03.enginers.PlayerInputProcess;
 import oc.projet03.game.Game;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class OrdiPlayer extends CraftPlayer {
-    private String next = "";
     public OrdiPlayer(Game g, int maxTry, int keysize) {
         super(g, maxTry);
+        min = new ArrayList<>();
+        max = new ArrayList<>();
         for(int i = 0; i < keysize; i++) {
-            min.add(0);
             max.add(9);
+            min.add(0);
         }
     }
-    private ArrayList<Integer> min = new ArrayList<>();
-    private ArrayList<Integer> max = new ArrayList<>();
+    //Les valeurs minimal possible pour chaque chiffres de la clée
+    private ArrayList<Integer> min;
+    //Les valeurs maximal possible pour chaque chiffres de la clée
+    private ArrayList<Integer> max;
     public void trySomthing() {
         game().log(3, "Try something");
         updateRange(game().lastComparedTry, game().lastComparedTryResult);
         String s = "";
         for(int i = 0; i < game().key.size(); i++){
-            s+= min.get(i)+(max.get(i)-min.get(i))/2;
+            int c =(max.get(i)-min.get(i))/2;
+            if(min.get(i)==max.get(i))s+=min.get(i);
+            else if(max.get(i)==1)s+=0;
+            else if(c<2) s+=min.get(i)+1;
+            else s+=min.get(i)+c;
         }
         new PlayerInputProcess(s, this).run();
+        updateRange(game().lastComparedTry, game().lastComparedTryResult);
     }
    private void updateRange(String Try, String result) {
-        if(Try==null || result==null)return;
+        if(Try==null || result==null) return;
         ArrayList<Integer> actual = new ArrayList<Integer>();
         for(char c : Try.toCharArray()) actual.add(Integer.parseInt(c+""));
         for(int i = 0; i < game().key.size(); i++) {
-            if(result.toCharArray()[i]=='+' && min.get(i)<actual.get(i)) min.set(i, actual.get(i));
-            else if(result.toCharArray()[i]=='-' && max.get(i)>actual.get(i)) max.set(i, actual.get(i));
-            else if(result.toCharArray()[i]=='=') {
-                min.set(i, actual.get(i));
-                max.set(i, actual.get(i));
+            if(!Objects.equals(min.get(i), max.get(i))){
+                if(result.toCharArray()[i]=='+' && min.get(i)<actual.get(i)) min.set(i, actual.get(i));
+                else if(result.toCharArray()[i]=='-' && max.get(i)>actual.get(i)) max.set(i, actual.get(i));
+                else if(result.toCharArray()[i]=='=') {
+                    min.set(i, actual.get(i));
+                    max.set(i, actual.get(i));
+                }
             }
         }
     }

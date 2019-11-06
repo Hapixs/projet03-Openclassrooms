@@ -9,7 +9,7 @@ public class Key {
     //taille de la clé
     private int size = 0;
     private Game game;
-    public void generate(int s, Game g) {
+    void generate(int s, Game g) {
         size = s;
         game =g;
         for(int i = 0; i < size; i++){
@@ -23,7 +23,7 @@ public class Key {
         for(int i = 0; i < size; i++) s.append("=");
         return s.toString();
     }
-    public void defineValue(ArrayList<Integer> array){
+    void defineValue(ArrayList<Integer> array){
         keyarray = array;
         size = array.size();
     }

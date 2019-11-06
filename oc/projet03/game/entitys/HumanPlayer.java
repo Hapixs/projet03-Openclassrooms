@@ -16,9 +16,11 @@ public class HumanPlayer extends CraftPlayer {
     public Thread speakListener() {
         return new Thread(() -> {
             while(game().getActualStat()!= GameStat.SHUTDOWN){
-                game().log(3, "En attente du joueur.");
-                System.out.print(username+" > ");
-                new PlayerInputProcess(new Scanner(System.in).nextLine(), this).run();
+                if(game().getActualPlayer()==this){
+                    System.out.print(username+" > ");
+                    game().log(3, "En attente du joueur.");
+                    new PlayerInputProcess(new Scanner(System.in).nextLine(), this).run();
+                }
             }
         });
     }
