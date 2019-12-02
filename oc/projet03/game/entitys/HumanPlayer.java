@@ -1,8 +1,9 @@
 package oc.projet03.game.entitys;
 
-import oc.projet03.enginers.PlayerInputProcess;
+import oc.projet03.game.enginers.PlayerInputProcess;
 import oc.projet03.game.Game;
 import oc.projet03.game.GameStat;
+import oc.projet03.utils.Text;
 
 import java.util.Scanner;
 
@@ -18,7 +19,7 @@ public class HumanPlayer extends CraftPlayer {
             while(game().getActualStat()!= GameStat.SHUTDOWN){
                 if(game().getActualPlayer()==this){
                     System.out.print(username+" > ");
-                    game().log(3, "En attente du joueur.");
+                    Text.DEBUG_WAITING_FOR_PLAYER.log(game().devMode());
                     new PlayerInputProcess(new Scanner(System.in).nextLine(), this).run();
                 }
             }

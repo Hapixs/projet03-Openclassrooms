@@ -1,4 +1,4 @@
-package oc.projet03.enginers;
+package oc.projet03.game.enginers;
 
 import oc.projet03.game.GameStat;
 import oc.projet03.game.entitys.HumanPlayer;
@@ -30,9 +30,6 @@ public class PlayerInputProcess {
                         if(args[1].equalsIgnoreCase("true")) p.game().setDevMode(true);
                         else if(args[1].equalsIgnoreCase("false")) p.game().setDevMode(false);
                         break;
-                    case "$maxtry" :
-                        p.game().setMaxTry(Integer.parseInt(args[1]));
-                        break;
                     case "$keysize" :
                         p.game().setKeySize(Integer.parseInt(args[1]));
                         break;
@@ -56,8 +53,8 @@ public class PlayerInputProcess {
                 p.game().lastComparedTryResult=compared;
                 p.decrementTry();
                 if(Objects.equals(compared, p.game().key.perfectString())) {
-                    if(p.game().getActualPlayer() instanceof HumanPlayer) ; // Player win game
-                    else ; // Bot win game
+                    if(p.game().getActualPlayer() instanceof HumanPlayer) Text.PLAYER_WIN.log();
+                    else Text.ORDI_WIN.log();
                     p.game().setGameStat(GameStat.END);
                 } else if(p.remainTry()<1) {
                     p.game().setGameStat(GameStat.END);

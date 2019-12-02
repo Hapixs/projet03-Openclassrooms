@@ -21,9 +21,9 @@ import oc.projet03.game.Game;
  */
 
 public class Main {
-    public static void main(String[] param) {
+    public static void main(String[] args) {
         //Initialisation d'une game avec les paramètres de lancement.
-        Game g = new Game(param);
+        Game g = new Game(args);
         //Lancement de la game
         g.start();
     }

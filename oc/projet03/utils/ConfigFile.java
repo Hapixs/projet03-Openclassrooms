@@ -37,8 +37,4 @@ public class ConfigFile {
     public int keySize() throws NumberFormatException {
         return Integer.parseInt(getValue("keysize"));
     }
-    public String getText(String name){
-        return getValue(name).replace("%n", "\n")
-                .replace("%t", "\t");
-    }
 }

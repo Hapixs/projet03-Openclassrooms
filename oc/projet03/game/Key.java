@@ -1,5 +1,7 @@
 package oc.projet03.game;
 
+import oc.projet03.utils.Text;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -9,41 +11,52 @@ public class Key {
     //taille de la clé
     private int size = 0;
     private Game game;
-    void generate(int s, Game g) {
+    public Key(int s, Game g) {
         size = s;
-        game =g;
+        game = g;
+    }
+    void generate() {
         for(int i = 0; i < size; i++){
             int a = new Random().nextInt(10);
             keyarray.add(a);
         }
-        g.log(3, "Clé : "+keyarray.toString());
+        Text.DEBUG_PRINT_KEY.log(new String[] {"'key'", keyarray.toString()}, game.devMode());
     }
+
+    /**
+     * Return ce que devrait être le string de comparaison de la clé correct
+     */
     public String perfectString() {
         StringBuilder s = new StringBuilder();
         for(int i = 0; i < size; i++) s.append("=");
         return s.toString();
     }
     void defineValue(ArrayList<Integer> array){
-        keyarray = array;
-        size = array.size();
+        for(int i =  0; i < size; i++) {
+            keyarray.add(array.get(i));
+        }
     }
     public int size () {
         return size;
     }
     public String compareTo(char[] s) {
-        StringBuilder st = new StringBuilder();
-        for(int i = 0; i < keyarray.size(); i++){
+        StringBuilder st = new StringBuilder(); // String de comparaison à renvoyer
+        for(int i = 0; i < size(); i++){
             try {
-                int a = keyarray.get(i);
-                int b = Integer.parseInt(s[i]+"");
-                if(a == b) st.append("=");
-                else if(a > b) st.append("+");
-                else if(a < b) st.append("-");
+                int a = keyarray.get(i); // Valeur de la clé à l'emplacement i
+                int b = Integer.parseInt(s[i]+""); // Valeur de l'essai à l'emplacement i
+                if(a == b) st.append("="); // Si les valeurs sont égales
+                else if(a > b) st.append("+"); // Si la clé à une valeur supérieur
+                else if(a < b) st.append("-"); // Si la clé à une valeur inférieur
             } catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
+                /*
+                    Si le joueur fait une proposition avec autre chose qu'un nombre
+                    Ou si la taille de l'essai est plus petit que la taille de la clé
+                 */
                 st.append("#");
             }
         }
-        game.log(0, "Clé > "+st);
+        Text.KEY_RESULT_COMPARED.log(new String[] {"'result'", st+""});
         return st.toString();
     }
 }

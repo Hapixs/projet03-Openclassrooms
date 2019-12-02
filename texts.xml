@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<texts>
+    <INITIALISATION>Initialisation des paramètres du jeux...</INITIALISATION>
+
+    <WELCOM_MESSAGE>Bonjour 'player' %nBienvenue dans ce jeux ! %n--------------------------------------------------------- </WELCOM_MESSAGE>
+
+    <MAIN_MENU>Choisis parmis les 3 modes de jeux ci-dessous celui au quel tu veux jouer %n%t(0) Quitter le jeux.%n%t(1) Challengeur : Essais de trouver la clée génere par l'ordi en 'maxtry' essais%n%t(2) Deffenseur : Choisis une clé et l'ordi essaiera de la trouvée%n%t(3) Duel : Soit plus rapide que l'ordi à trouver la clée</MAIN_MENU>
+
+    <END_MENU>Choisis une option ci-dessous.%n%t(0) Quitter le jeux.%n%t(1) Rejouer.%n%t(2) Revenir au menu principale.</END_MENU>
+
+    <ARGUMENT_ERROR>Désolé mais 'arg' n'est pas un argument valide</ARGUMENT_ERROR>
+
+    <KEY_SIZE_INCORRECT>La taille de la clé n'est pas bonne !</KEY_SIZE_INCORRECT>
+
+    <KEY_FORMAT_INVALID>Le format de la clé n'est pas bon !</KEY_FORMAT_INVALID>
+
+    <STOP>Arrêt de la game ...</STOP>
+
+    <DEFINE_KEY>Indiquer une clé à trouver de 'keysize' chiffres</DEFINE_KEY>
+
+    <KEY_RESULT_COMPARED>'result'</KEY_RESULT_COMPARED>
+
+    <ORDI_WIN>L'ordi à trouver la clé ! tu as perdu.</ORDI_WIN>
+
+    <PLAYER_WIN>Tu à gagner bravo !</PLAYER_WIN>
+
+    <WARN_DATA_ARG_INVALID>'arg' n'est pas reconnus en tant qu'argument de lancement.</WARN_DATA_ARG_INVALID>
+
+    <WARN_DATA_ARGS_ERROR>Un problème est survenu lors de l'analyse des paramètres de lancement, une valeur n'est pas bonne !</WARN_DATA_ARGS_ERROR>
+
+    <WARN_DATA_CONFIGFILE_ERROR>Une erreur est survenue lors de la lecture des donnée !</WARN_DATA_CONFIGFILE_ERROR>
+
+    <DEBUG_DATA_CONFIGFILE>Récuperation des donnée du fichier config.xml...</DEBUG_DATA_CONFIGFILE>
+
+    <DEBUG_DATA_CONFIGFILE_COMPLET>Les donnée du fichier on été récupérer</DEBUG_DATA_CONFIGFILE_COMPLET>
+
+    <DEBUG_DATA_ARGS>Analyse des paramètres de lancement</DEBUG_DATA_ARGS>
+
+    <DEBUG_DATA_ARGS_COMPLET>Paramètres de lancement instanciés !</DEBUG_DATA_ARGS_COMPLET>
+
+    <DEBUG_DEV_MODE_ACTIVATED>Mode développeur activé !</DEBUG_DEV_MODE_ACTIVATED>
+
+    <DEBUG_GAMESTAT_CHANGE>Le gamestat à été changer en 'gamestat'</DEBUG_GAMESTAT_CHANGE>
+
+    <DEBUG_MAXTRY_CHANGE>Le nombre d'essais maximum viens d'être changer !</DEBUG_MAXTRY_CHANGE>
+
+    <DEBUG_KEYSIZE_CHANGE>La taille de la clé à été changer</DEBUG_KEYSIZE_CHANGE>
+
+    <DEBUG_STARTING_GAME>Lancement de la partie / Initialisation des dérnier paramètres</DEBUG_STARTING_GAME>
+
+    <DEBUG_GAME_ALREADY_PLAYING>Il semblerais que cette instance de game soit déjà en cours.</DEBUG_GAME_ALREADY_PLAYING>
+
+    <DEBUG_SWITCHING_PLAYER>Changement du joueur actuelle ...</DEBUG_SWITCHING_PLAYER>
+
+    <DEBUG_PRINT_KEY>'key'</DEBUG_PRINT_KEY>
+
+    <DEBUG_WAITING_FOR_PLAYER>En attente du joueur...</DEBUG_WAITING_FOR_PLAYER>
+</texts>

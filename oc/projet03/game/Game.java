@@ -4,175 +4,228 @@ import oc.projet03.game.entitys.HumanPlayer;
 import oc.projet03.game.entitys.OrdiPlayer;
 import oc.projet03.game.entitys.Player;
 import oc.projet03.utils.ConfigFile;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import oc.projet03.utils.Text;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.util.*;
 
-
+/**
+ * Class Game:
+ * Initialise une nouvelle partie avec les paramètre de la config par défaut puis (si il y en à) les paramètres de lancement définis dans le constructeur (args)
+ * Cette class sert à gérer l'avencement/état de la partie actuelle et les joueurs qui y sont ajouter
+ */
 public class Game {
-    //Logger
-    private static Logger gamelogger = LogManager.getLogger(Game.class);
-    //Stat de la game, si le jeux est en cours ou si le joueurs doit choisir une option dans un menu
-    private GameStat stat;
-    //Liste des joueurs actifs (maximum deux joueurs)
-    private ArrayList<Player> players = new ArrayList<>();
+
+    private GameStat stat; // Etat actuelle de la partie
+    private ArrayList<Player> players = new ArrayList<>();  // Liste des joueurs actifs (maximum deux joueurs (Un Human + un Bot))
     private boolean devmode = false; //Définit l'activation du mode développeur
     private int maxtry = 0;  // Définit le nombre d'essais que le joueur possède
     private int keysize = 0; // Définit la taille de la clé à trouver
-    public Key key = new Key(); // Objet représentant la clé actuelle.
-    public String lastComparedTryResult; // Dérnier resultat de la comparaison
-    public String lastComparedTry;  // Dérnier essais d'un joueur
+    public Key key = null; // Objet représentant la clé actuelle.
+    public String lastComparedTryResult; // Dernier resultat de la comparaison obtunu par un joueur
+    public String lastComparedTry;  // Dernier essais effectuer d'un joueur.
     public String cfg_username; // nom d'utilisateur (uniquement si définit dans les paramètres de lancement)
-    private HashMap<String, String> appText = new HashMap<>();
 
+    /**
+     * Constructeur de la class Game
+     * Il permet d'initialiser les variables ci-dessus avec les diférentes configurations possible.
+     * @param args
+     */
     public Game(String[] args) {
-        log(0, "Initalisation des paramètres du jeux...");
-        setGameStat(GameStat.INIT);
+        // INITIALISATION
+        Text.INITIALISATION.log();                  // SOME TEXT
+        setGameStat(GameStat.INIT);                 // Definir l'état actuelle sur INIT
+
         // Récuperation des donnée dans config.xml
         try {
-            log(3, "Récupération des donnée du fichier config.xml");
-            ConfigFile cf = new ConfigFile(); // Config du programme
-            setDevMode(cf.devMode());
-            maxtry = cf.maxTry();
-            keysize = cf.keySize();
-            appText.put("WELCOM_MESSAGE", cf.getText("WELCOM_MESSAGE"));
-            appText.put("MAIN_MENU", cf.getText("MAIN_MENU"));
-            appText.put("END_MENU", cf.getText("END_MENU"));
-            appText.put("ARGUMENT_ERROR", cf.getText("ARGUMENT_ERROR"));
+           Text.DEBUG_DATA_CONFIGFILE.log(devmode); // SOME DEBUG TEXT
+           ConfigFile cf = new ConfigFile(); // Fichier de configuration de l'app.
+            // INIT DES VARIABLE EN FONC DU FICHIER config.xml
+           setDevMode(cf.devMode()); // DEV MODE
+           setMaxTry(cf.maxTry()); // ESSAIS MAX
+           setKeySize(cf.keySize()); // TAILLE CLE
 
-
-            log(3, "Donnée du fichier config.xml chargées !");
-        } catch (Exception e) {
-            log(1,"Une erreur est survenue lors de la lecture du fichier config.xml.");
+           Text.DEBUG_DATA_CONFIGFILE_COMPLET.log(devmode); // SOME DEBUG TEXT
+        } catch (ParserConfigurationException | IOException | SAXException e) { // En cas d'erreur de lecture du fichier config.xml.
+           Text.WARN_DATA_CONFIGFILE_ERROR.log(); // WARN
+        } catch (NumberFormatException e) { // Si un arguement n'est
+            Text.WARN_DATA_ARG_INVALID.log(); // WARN
         }
-        // Analyse des paramètres de lancement
+        // Analyse des paramètres donner dans le tableau args
         try{
-            log(3, "Analyse des paramètres de lancement");
+            Text.DEBUG_DATA_ARGS.log(devmode); // SOME DEBUG TEXT
+
+            // Parcours chaque string dans le tableau
             for(String p: args) {
-                if(p.equalsIgnoreCase("devmode")) devmode=true;
-                else if(p.split(":").length>=2&&p.split(":")[0].equalsIgnoreCase("maxtry")) maxtry = Integer.parseInt(p.split(":")[1]);
-                else if(p.split(":").length>=2&&p.split(":")[0].equalsIgnoreCase("keysize"))keysize = Integer.parseInt(p.split(":")[1]);
-                else if(p.split(":").length>=2&&p.split(":")[0].equalsIgnoreCase("username")) cfg_username=  p.split(":")[1];
-                else System.out.println(p+" n'est pas reconnus en tant qu'argument.");
+                if(p.equalsIgnoreCase("devmode")) devmode=true; // DEV MODE
+                else if(p.split(":").length>=2&&p.split(":")[0].equalsIgnoreCase("maxtry")) setMaxTry(Integer.parseInt(p.split(":")[1])); // ESSAIS MAX
+                else if(p.split(":").length>=2&&p.split(":")[0].equalsIgnoreCase("keysize"))setKeySize(Integer.parseInt(p.split(":")[1])); // TAILLE CLE
+                else if(p.split(":").length>=2&&p.split(":")[0].equalsIgnoreCase("username")) cfg_username =  p.split(":")[1]; // USER NAME
+                else Text.WARN_DATA_ARG_INVALID.log(new String[] {"'arg'", p}); // WARN
             }
-            log(3, "Paramètre instancié !");
-        } catch(NumberFormatException e) {
-            log(1,"Un problème est survenu lors de l'analyse des paramètres de lancement, une valeur n'est pas bonne !");
+            Text.DEBUG_DATA_ARGS_COMPLET.log(devmode); // SOME DEBUG TEXT
+        } catch(NumberFormatException e) { // Si une des valeur d'un paramètre n'est pas correcte
+            Text.WARN_DATA_ARGS_ERROR.log(); // WARN
         }
-        log(3, "les paramètres de l'application on été initialisés : " +
-                "\n|\tDevmode = "+devmode
-                +   "\n|\tMaxtry = "+maxtry
-                +   "\n|\tKeysize = "+keysize);
     }
-    // Activation du mode developpeur
+    /**
+      Activation du mode developpeur
+     */
     public void setDevMode(boolean b) {
-        devmode = b;
-        if(b) log(3, "Mode développeur activé.");
-        else log(3, "Mode développeur desactivé.");
+        devmode = b; // CHANGE DEV MODE VALUE
+        if(b) Text.DEBUG_DEV_MODE_ACTIVATED.log(true); // SOME DEBUG TEXT
     }
-    // Change le nombres d'essais maximum
+    public boolean devMode() {
+        return devmode;
+    }
+    /**
+       Change le nombres d'essais maximum
+     */
     public void setMaxTry(int mt){
-        maxtry=mt;
+        maxtry=mt; // CHANGE MAXTRY VALUE
+        Text.DEBUG_MAXTRY_CHANGE.log(devmode); // SOME DEBUG TEXT
     }
-    // Change la taille de la clée à trouver
+    /**
+       Change la taille de la clée à trouver
+     */
     public void setKeySize(int ks){
-        keysize=ks;
+        keysize=ks; // CHANGE KEYSIZE VALUE
+        Text.DEBUG_KEYSIZE_CHANGE.log(devmode); // SOME DEBUG TEXT
     }
-    // Return la GameStat actuelle de la game
+    /**
+       Return la GameStat actuelle de la game
+     */
     public GameStat getActualStat() {
         return stat;
     }
-    // Change le gameStat actuelle de la game
+    /**
+       Change le gameStat actuelle de la game
+     */
     public void setGameStat(GameStat st) {
-        stat = st;
-        log(3, "Changement du Gamestat en "+st.name()+".");
-        if(stat==GameStat.WAITING) printMainMenu();
+        stat = st; // CHANGE STAT VALUE
+        String[] s = new String[] {"'gamestat'", st.name()};
+        Text.DEBUG_GAMESTAT_CHANGE.log(s, devmode);
+        if(stat==GameStat.WAITING) printMainMenu(); // Afficher le menu princiaple
         else if(stat==GameStat.END){
-            printEndMenu();
-            for(Player p : (ArrayList<Player>) players.clone()) if(p instanceof OrdiPlayer) unregisterPlayer(p);
+            printEndMenu(); // Affichier le menu de fin de partie
+            ((ArrayList<Player>) players.clone()).stream().filter(p -> p instanceof OrdiPlayer).forEach(this::unregisterPlayer); // Suppression des joueur de la partie
         }
     }
+    /**
+     * Démarre la partie instancié
+     */
     public void start() {
-        if(!threadInstance.isAlive()){
-            threadInstance.start();
-            log(3, "Lancement de la game avec les paramètres définis.");
-        } else log(3, "Il semblerait que la game soit déjà en cours.");
-
+        Text.DEBUG_STARTING_GAME.log(devmode); // SOME DEBUG TEXT
+        if(stat == GameStat.INIT) new Thread(() -> { // Initialisation finale de la partie (joueur) dans un autres Thread.
+            if(cfg_username == null) {
+                System.out.print("Nom d'utilisateur: ");
+                registerNewPlayer(new HumanPlayer(this, new Scanner(System.in).next(), maxtry)); // Enregistrement d'un nouveau joueur human avec sont username.
+            } else registerNewPlayer(new HumanPlayer(this, cfg_username, maxtry)); // Enregistrement d'un nouveau joueur human avec l'username des paramètres données.
+            Text.WELCOM_MESSAGE.log(new String[] {"'player'", ((HumanPlayer) getActualPlayer()).username}); // SOME TEXT
+            // La partie est maintenant totalement configurer il manque à ajouter le bot en fonction du mode choisis.
+            setGameStat(GameStat.WAITING); // Changement de l'état en WAINTING, pour afficher le menu princiaple
+        }).start();
+        else Text.DEBUG_GAME_ALREADY_PLAYING.log(devmode); // SOME DEBUG TEXT
     }
-    private Thread threadInstance = new Thread(() -> {
-        if(cfg_username == null) {
-            System.out.print("Nom d'utilisateur: ");
-            registerNewPlayer(new HumanPlayer(this, new Scanner(System.in).next(), maxtry));
-        } else registerNewPlayer(new HumanPlayer(this, cfg_username, maxtry));
-        for(String s : appText.get("WELCOM_MESSAGE").split("\n")) log(0, s.replace("'player'", ((HumanPlayer) players.get(0)).username));
-        setGameStat(GameStat.WAITING);
-    });
+    /**
+     * Stop la partie en cours.
+     */
     public void stop() {
-        log(3, "Arrêt de la game ...");
-        setGameStat(GameStat.SHUTDOWN);
+        Text.STOP.log(); // SOME TEXT
+        setGameStat(GameStat.SHUTDOWN); // Changement de l'état en SHUTDOWN pour arreter la partie et les Thread qui y sont accrocher
     }
+    /**
+     * Return le joueur qui doit jouer (si les joueur sont plusieur)
+     * Le joueur qui doit joueur sera le premier de la liste puis passera dernier une foie jouer
+     * @return
+     */
     public Player getActualPlayer() {
         return players.get(0);
     }
+    /**
+     * Ajouter à la liste des joueurs un joueur définit
+     * @param p
+     */
     private void registerNewPlayer(Player p) {
-        if(players()>2) for(Player pl : players) if(pl instanceof OrdiPlayer) unregisterPlayer(pl);
-        if(!players.contains(p))players.add(p);
-        log(3, "Un joueur "+p.getClass().getSimpleName()+" vient d'être ajouter dans la game.");
+        if(players()>2) players.stream().filter(pl -> pl instanceof OrdiPlayer).forEach(this::unregisterPlayer); // Si il y déja plus de deux joueur alors on supprime les bots.
+        if(!players.contains(p)) players.add(p); // Ajout du joueur dans la liste
     }
+    /**
+     * Retire à la liste des joueurs un joueur définit
+     * @param p
+     */
     private void unregisterPlayer(Player p) {
-        if(players.contains(p))players.remove(p);
-        if(p instanceof HumanPlayer && ((HumanPlayer) p).speakListener().isAlive())  ((HumanPlayer) p).speakListener().stop();
-        log(3, "Un joueur "+p.getClass().getSimpleName()+" vient d'être retirer de la game.");
+        if(players.contains(p)) players.remove(p); // suppression du joueur dans la liste
+        if(p instanceof HumanPlayer && ((HumanPlayer) p).speakListener().isAlive())  ((HumanPlayer) p).speakListener().stop(); // Si le joueur est un human alors on stop sont listener
     }
+
+    /**
+     * Change le joueur actuelle
+     */
     public void switchPlayer() {
         if(players()>1){
-            log(3, "Changement du joueurs actuelle");
-            Collections.reverse(players);
-            log(3, "Joueur actuelle: "+getActualPlayer().getClass().getSimpleName());
-            if(getActualPlayer()instanceof OrdiPlayer) ((OrdiPlayer) getActualPlayer()).trySomthing();
+            Text.DEBUG_SWITCHING_PLAYER.log(devmode); // SOME DEBUG TEXT
+            Collections.reverse(players); // Retourner la lister le joueur 0 devient le joueur 1 et vis vers sa
+            if(getActualPlayer()instanceof OrdiPlayer) ((OrdiPlayer) getActualPlayer()).trySomething(); // Si le joueur actuelle est maintenant un bot alors on lui demande de faire un essais
         }
     }
-    public void log(int level, String log) {
-        if(level==0) gamelogger.info(log);
-        else if(level==1) gamelogger.warn(log);
-        else if(level==2) gamelogger.error(log);
-        else if(level==3 && devmode) gamelogger.debug(log);
-        else if(level>3) System.out.println("une erreur est survenue, impossible de trouvée le niveau de log "+level);
+    /**
+     * Affiche le menu principale et ces option
+     */
+    private void printMainMenu() {
+        Text.MAIN_MENU.log(new String[] {"'maxtry'", maxtry+"", "'keysize'", keysize+""});
     }
-    public void printMainMenu() {
-        for(String s : appText.get("MAIN_MENU").split("\n")) log(0, s.replace("'maxtry'", maxtry+"")
-        .replace("'keysize'", keysize+""));
+    /**
+     * Affiche le menu de fin de partie et ces option
+     */
+    private void printEndMenu(){
+       Text.END_MENU.log();
     }
-    public void sendArgumentErrorMessage(Object arg) {
-        log(0, appText.get("ARGUMENT_ERROR").replace("'arg'", arg+""));
-    }
-    public void printEndMenu(){
-        for(String s : appText.get("END_MENU").split("\n")) log(0, s);
-    }
+    /**
+     * Return le nombre de joueur actif dans la partie
+     * @return
+     */
     public int players() {
         return players.size();
     }
-    int mode = 0;
+    int mode = 0; // Definit le mode de jeux actuelle
+    /**
+     * Renvoie la valeur du mode de jeux actuelle
+     * @return
+     */
     public int getMode() {
         return mode;
     }
+    /**
+     * Initialise un mode de jeux définit
+     * @param mode
+     */
     public void initMode(int mode) {
-        if(mode > 3) return;
-        log(3, "Initialisation du mode "+mode+" ...");
+        if(mode > 3) return; // Si le mode est incorrect
         for(Player p : players) p.resetData();
         lastComparedTryResult = null;
         lastComparedTry = null;
-        key = new Key();
+        key = new Key(keysize, this);
         this.mode = mode;
-        if(mode!=2){
-            key.generate(keysize, this);
+        if(mode!=1) {
+            registerNewPlayer(new OrdiPlayer(this, maxtry, keysize));
+            if(mode==3){
+                key.generate();
+                setGameStat(GameStat.PLAYING);
+                if(new Random().nextInt(3) > 1)switchPlayer();
+                return;
+            }
+        } else {
+            key.generate();
             setGameStat(GameStat.PLAYING);
+            return;
         }
-        else {
+        if(mode==2){
             setGameStat(GameStat.INIT);
             while(getActualStat()==GameStat.INIT){
-                log(0, "Indiquer une clé à trouver de "+keysize+" chiffres");
+                Text.DEFINE_KEY.log(new String[] {"'keysize'", keysize+""});
                 String s = new Scanner(System.in).next();
                 try {
                     if(s.toCharArray().length==keysize){
@@ -182,15 +235,12 @@ public class Game {
                         }
                         key.defineValue(array);
                         setGameStat(GameStat.PLAYING);
-                    } else sendArgumentErrorMessage(s);
+                        switchPlayer();
+                    } else Text.KEY_SIZE_INCORRECT.log();
                 } catch(NumberFormatException e) {
-                    sendArgumentErrorMessage(s);
+                    Text.KEY_FORMAT_INVALID.log();
                 }
             }
-        }
-        if(mode!=1) {
-            registerNewPlayer(new OrdiPlayer(this, maxtry, keysize));
-            if(mode==3 && new Random().nextInt(3) > 1) switchPlayer();
         }
     }
 }
