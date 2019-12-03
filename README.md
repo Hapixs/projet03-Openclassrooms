@@ -5,7 +5,7 @@
  Config.xml -> Permet de changer les paramètre tel que devmode, taille de la clé ou nombre d'essais.\
  Texts.xml  -> Répertorie les messages que le programme envoie en debug / info / erreur.\
  Ces deux fichier sont essentiels et doivent être obligatoirement dans le même dossier que le programme .jar\
- A l'interieur du programme ce trouver le fichier log4j2.xml qui permet la configuration des differents loggers.\
+ A l'interieur du programme ce trouver le fichier log4j2.xml qui permet la configuration des differents loggers.
 
 ### Args de lancement:
   Pour activer le mode developpeur :
