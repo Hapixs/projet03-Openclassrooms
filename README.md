@@ -1,10 +1,13 @@
 # projet03-Openclassrooms
-## Lancement du programme :
- Dans un fichier .bat, écrire la ligne: 'java -jar <chemin vers le programme>/projet03.jar [arguments]'.
- Le programme utilise deux fichier de configuration obligatoire en dehors de sa structure, config.xml et texts.xml
- Config.xml -> Permet de changer les paramètre tel que devmode, taille de la clé ou nombre d'essais.
- Texts.xml  -> Répertorie les messages que le programme envoie en debug / info / erreur.
- Ces deux fichier sont essentiels et doivent être obligatoirement dans le même dossier que le programme .jar
+## Compilation:
+ Une foie le code importer dans un ide, il faut compiler l'application avec ces dépendences maven afin que le programme soit éxecutable.\
+ Les dépendences sont définies dans le pom.xml
+## Execution du programme :
+ Dans un fichier .bat, écrire la ligne: 'java -jar <chemin vers le programme>/projet03.jar [arguments]'.\
+ Le programme utilise deux fichier de configuration obligatoire en dehors de sa structure, config.xml et texts.xml\
+ Config.xml -> Permet de changer les paramètre tel que devmode, taille de la clé ou nombre d'essais.\
+ Texts.xml  -> Répertorie les messages que le programme envoie en debug / info / erreur.\
+ Ces deux fichier sont essentiels et doivent être obligatoirement dans le même dossier que le programme .jar\
  A l'interieur du programme ce trouver le fichier log4j2.xml qui permet la configuration des differents loggers.
 
 ### Args de lancement:
