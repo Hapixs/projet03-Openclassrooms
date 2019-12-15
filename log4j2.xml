@@ -7,13 +7,13 @@
         <Console name="DebugConsole" target="SYSTEM_OUT">
             <PatternLayout pattern="|DEBUG| : [%d{HH:mm:ss}] %msg%n"/>
         </Console>
-        <RollingFile name="Logs" fileName="Applog.log" filepattern="D:/projet03/AppLogFile-%d{yyyy-MM-dd}-%i.log.zip">
+        <RollingFile name="Logs" fileName="Logs/Applog.log" filepattern="AppLogFile-%d{yyyy-MM-dd}-%i.log.zip">
             <PatternLayout pattern="[%d{HH:mm:ss}] [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="50KB"/>
             </Policies>
         </RollingFile>
-        <RollingFile name="deb" fileName="debug.log" filepattern="D:/projet03/debug-%d{yyyy-MM-dd}-%i.log.zip">
+        <RollingFile name="deb" fileName="Logs/debug.log" filepattern="debug-%d{yyyy-MM-dd}-%i.log.zip">
             <PatternLayout pattern="[%d{HH:mm:ss}] [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="50KB"/>

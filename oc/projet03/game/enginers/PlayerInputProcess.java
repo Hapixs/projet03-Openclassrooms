@@ -24,18 +24,20 @@ public class PlayerInputProcess {
             //Split input string
             String[] args = s.split(" ");
             if(args.length<2)return;
-            try{
-                switch(args[0]) {
-                    case "$devmode" :
-                        if(args[1].equalsIgnoreCase("true")) p.game().setDevMode(true);
-                        else if(args[1].equalsIgnoreCase("false")) p.game().setDevMode(false);
-                        break;
-                    case "$keysize" :
-                        p.game().setKeySize(Integer.parseInt(args[1]));
-                        break;
+            if(p.game().inGameCommand) {
+                try{
+                    switch(args[0]) {
+                        case "$devmode" :
+                            if(args[1].equalsIgnoreCase("true")) p.game().setDevMode(true);
+                            else if(args[1].equalsIgnoreCase("false")) p.game().setDevMode(false);
+                            break;
+                        case "$keysize" :
+                            p.game().setKeySize(Integer.parseInt(args[1]));
+                            break;
+                    }
+                } catch(NumberFormatException e){
+                    Text.ARGUMENT_ERROR.log(new String[] {"'arg'", args[1]});
                 }
-            } catch(NumberFormatException e){
-                Text.ARGUMENT_ERROR.log(new String[] {"'arg'", args[1]});
             }
         }
         else if(s.equalsIgnoreCase("exit") || ((p.game().getActualStat() == GameStat.WAITING || p.game().getActualStat() == GameStat.END) && s.equalsIgnoreCase("0"))) p.game().stop();

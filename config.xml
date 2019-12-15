@@ -3,4 +3,5 @@
     <devmode>false</devmode>
     <maxtry>10</maxtry>
     <keysize>4</keysize>
+    <inGameCommands>true</inGameCommands>
 </config>

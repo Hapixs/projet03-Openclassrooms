@@ -28,13 +28,15 @@ public class ConfigFile {
         return e.getElementsByTagName(field).item(0).getTextContent();
     }
     public boolean devMode() {
-        if(getValue("devmode").equalsIgnoreCase("false"))return false;
-        else return true;
+        return !getValue("devmode").equalsIgnoreCase("false");
     }
     public int maxTry() throws NumberFormatException {
         return Integer.parseInt(getValue("maxtry"));
     }
     public int keySize() throws NumberFormatException {
         return Integer.parseInt(getValue("keysize"));
+    }
+    public boolean inGameCommands() {
+        return !getValue("inGameCommands").equalsIgnoreCase("false");
     }
 }

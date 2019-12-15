@@ -27,7 +27,7 @@ public class Game {
     public String lastComparedTryResult; // Dernier resultat de la comparaison obtunu par un joueur
     public String lastComparedTry;  // Dernier essais effectuer d'un joueur.
     public String cfg_username; // nom d'utilisateur (uniquement si définit dans les paramètres de lancement)
-
+    public boolean inGameCommand = false;
     /**
      * Constructeur de la class Game
      * Il permet d'initialiser les variables ci-dessus avec les diférentes configurations possible.
@@ -46,7 +46,7 @@ public class Game {
            setDevMode(cf.devMode()); // DEV MODE
            setMaxTry(cf.maxTry()); // ESSAIS MAX
            setKeySize(cf.keySize()); // TAILLE CLE
-
+            inGameCommand = cf.inGameCommands();
            Text.DEBUG_DATA_CONFIGFILE_COMPLET.log(devmode); // SOME DEBUG TEXT
         } catch (ParserConfigurationException | IOException | SAXException e) { // En cas d'erreur de lecture du fichier config.xml.
            Text.WARN_DATA_CONFIGFILE_ERROR.log(); // WARN
